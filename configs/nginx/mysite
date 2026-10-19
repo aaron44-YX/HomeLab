@@ -1,0 +1,19 @@
+# Nginx server block for my static site (homelab Phase 2)
+# Install: copy to /etc/nginx/sites-available/, symlink into sites-enabled/
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name _;
+
+    root /var/www/mysite;
+    index index.html index.htm index.php;
+
+    access_log /var/log/nginx/mysite.access.log;
+    error_log  /var/log/nginx/mysite.error.log;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
