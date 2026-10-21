@@ -37,8 +37,8 @@ Full details and verification commands are in [docs/baseline.md](docs/baseline.m
 ## Roadmap progress
 
 - [x] Phase 1: Hardware and baseline
-- [ ] Phase 2: Nginx web server
-- [ ] Phase 3: LEMP stack
+- [X] Phase 2: Nginx web server
+- [X] Phase 3: LEMP stack
 - [ ] Phase 4: Bash scripting and backups
 - [ ] Phase 5: Git and Ansible
 - [ ] Phase 6: Docker and Docker Compose
@@ -51,4 +51,6 @@ Full details and verification commands are in [docs/baseline.md](docs/baseline.m
 
 ```
 2026-10-18  Phase 1 complete. Server up, SSH keys only, firewall and auto-updates on.
+2026-10-19  Phase 2 complete. Nginx web server.
+2026-10-21  Phase 3 complete. LEMP stack up, MariaDB hardened, WordPress live on LAN.
 ```
