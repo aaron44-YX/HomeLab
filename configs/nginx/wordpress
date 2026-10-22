@@ -1,0 +1,41 @@
+# /etc/nginx/sites-available/wordpress
+# WordPress on Nginx + PHP-FPM 8.3 (LAN only, hostname set in the laptop's /etc/hosts)
+server {
+    listen 80;
+    server_name wp.lab.local;
+
+    root /var/www/wordpress;
+    index index.php;
+
+    access_log /var/log/nginx/wordpress.access.log;
+    error_log  /var/log/nginx/wordpress.error.log;
+
+    client_max_body_size 64M;
+
+    # Pretty permalinks: try the file, then the directory, then hand off to WordPress
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    # Hand PHP to PHP-FPM through its unix socket
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+    }
+
+    # Never serve hidden files (.git, .env, .htaccess)
+    location ~ /\. {
+        deny all;
+    }
+
+    # Never execute PHP from the uploads folder
+    location ~* /wp-content/uploads/.*\.php$ {
+        deny all;
+    }
+
+    # Browser caching for static assets
+    location ~* \.(css|js|jpg|jpeg|png|gif|ico|svg|woff2?)$ {
+        expires 30d;
+        access_log off;
+    }
+}
