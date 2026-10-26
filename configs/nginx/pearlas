@@ -1,0 +1,29 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name pearlas.lab.local pearlas.online;
+
+    root /var/www/pearlas/public;
+    index index.php;
+    charset utf-8;
+    client_max_body_size 40M;
+
+    access_log /var/log/nginx/pearlas.access.log;
+    error_log  /var/log/nginx/pearlas.error.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ ^/index\.php(/|$) {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_pass unix:/run/php/pearlas-fpm.sock;
+        fastcgi_read_timeout 60s;
+    }
+
+    location ~ /\.(?!well-known) {
+        deny all;
+    }
+}

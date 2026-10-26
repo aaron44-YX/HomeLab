@@ -1,0 +1,25 @@
+server {
+    listen 127.0.0.1:8081;
+    server_name _;
+
+    root /var/www/pearlas-mis/public;
+    index index.php;
+
+    access_log /var/log/nginx/pearlas-mis.access.log;
+    error_log  /var/log/nginx/pearlas-mis.error.log;
+
+    location / {
+        try_files $uri /index.php?$query_string;
+    }
+
+    location ~ ^/index\.php(/|$) {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_pass unix:/run/php/pearlas-fpm.sock;
+    }
+
+    location ~ /\.(?!well-known) {
+        deny all;
+    }
+}

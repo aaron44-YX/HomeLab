@@ -1,0 +1,14 @@
+[Unit]
+Description=PearlAS queue worker
+After=network.target mariadb.service
+
+[Service]
+User=www-data
+Group=www-data
+Restart=always
+RestartSec=3
+WorkingDirectory=/var/www/pearlas
+ExecStart=/usr/bin/php /var/www/pearlas/artisan queue:work --queue=default --sleep=3 --tries=3 --backoff=10 --timeout=120 --max-time=3600
+
+[Install]
+WantedBy=multi-user.target
