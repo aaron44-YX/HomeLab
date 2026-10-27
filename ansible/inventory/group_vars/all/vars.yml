@@ -1,0 +1,28 @@
+---
+# --- who Ansible connects as ---
+admin_user: homelab                      # your username on server and VM
+ansible_user: "{{ admin_user }}"
+admin_ssh_pubkey_file: "~/.ssh/id_ed25519.pub"
+admin_passwordless_sudo: true
+
+# --- baseline ---
+timezone: "Asia/Manila"
+baseline_packages:
+  - ufw
+  - unattended-upgrades
+  - acl
+  - curl
+  - git
+  - vim
+  - htop
+
+# --- web and LEMP ---
+php_version: "8.3"                       # Ubuntu 24.04 ships PHP 8.3
+wp_path: /var/www/wordpress
+wp_db_name: wordpress
+wp_db_user: wp_user
+wp_db_password: "{{ vault_wp_db_password }}"
+wp_title: "Homelab WordPress"
+wp_admin_user: wpadmin
+wp_admin_password: "{{ vault_wp_admin_password }}"
+wp_admin_email: admin@example.com

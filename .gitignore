@@ -1,0 +1,15 @@
+
+# Ansible secrets and noise
+.vault_pass
+ansible/.vault_pass
+*.retry
+
+# Editors and Python
+*.swp
+.vscode/
+__pycache__/
+.venv/
+
+# Safety net
+*.pem
+.env
