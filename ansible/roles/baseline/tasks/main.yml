@@ -1,0 +1,97 @@
+---
+- name: Update apt cache and upgrade all packages
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: dist
+    lock_timeout: 120
+
+- name: Install baseline packages
+  ansible.builtin.apt:
+    name: "{{ baseline_packages }}"
+    state: present
+    lock_timeout: 120
+
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+
+- name: Ensure admin user exists and is in the sudo group
+  ansible.builtin.user:
+    name: "{{ admin_user }}"
+    groups: sudo
+    append: true
+    shell: /bin/bash
+    state: present
+
+# The key task MUST come before the SSH hardening task below.
+# If it fails, the play stops before password login is disabled.
+- name: Install your public key for the admin user
+  ansible.posix.authorized_key:
+    user: "{{ admin_user }}"
+    key: "{{ lookup('file', admin_ssh_pubkey_file) }}"
+    state: present
+
+- name: Passwordless sudo for the admin user (lab convenience)
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/90-ansible-admin
+    content: "{{ admin_user }} ALL=(ALL) NOPASSWD:ALL\n"
+    owner: root
+    group: root
+    mode: "0440"
+    validate: /usr/sbin/visudo -cf %s
+  when: admin_passwordless_sudo | bool
+
+- name: Harden SSH
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/00-hardening.conf
+    content: |
+      # Managed by Ansible. Do not edit by hand.
+      PermitRootLogin no
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PubkeyAuthentication yes
+      MaxAuthTries 3
+      X11Forwarding no
+    owner: root
+    group: root
+    mode: "0644"
+    validate: /usr/sbin/sshd -t -f %s
+  notify: Restart ssh
+
+- name: ufw - allow SSH before enabling the firewall
+  community.general.ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+
+- name: ufw - default allow outgoing
+  community.general.ufw:
+    default: allow
+    direction: outgoing
+
+- name: ufw - default deny incoming and enable
+  community.general.ufw:
+    state: enabled
+    default: deny
+    direction: incoming
+
+- name: Enable automatic security updates
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Check whether a reboot is required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: reboot_required
+
+- name: Report reboot requirement
+  ansible.builtin.debug:
+    msg: "A reboot is required (kernel or core library update). Reboot when convenient."
+  when: reboot_required.stat.exists
