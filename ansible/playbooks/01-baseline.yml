@@ -1,0 +1,7 @@
+---
+- name: Playbook 1 - Baseline hardening
+  hosts: "{{ target | default('rebuild') }}"
+  become: true
+  roles:
+    - baseline
+
