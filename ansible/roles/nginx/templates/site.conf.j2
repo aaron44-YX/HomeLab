@@ -1,0 +1,34 @@
+# Managed by Ansible. Do not edit by hand.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ item.server_name }};
+    root {{ item.root }};
+{% if item.php | default(false) %}
+    index index.php index.html;
+{% else %}
+    index index.html;
+{% endif %}
+
+    access_log /var/log/nginx/{{ item.name }}.access.log;
+    error_log  /var/log/nginx/{{ item.name }}.error.log;
+
+    location / {
+{% if item.php | default(false) %}
+        try_files $uri $uri/ /index.php?$args;
+{% else %}
+        try_files $uri $uri/ =404;
+{% endif %}
+    }
+{% if item.php | default(false) %}
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php{{ php_version }}-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+{% endif %}
+}
