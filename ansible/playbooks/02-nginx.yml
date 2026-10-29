@@ -1,0 +1,11 @@
+---
+- name: Playbook 2 - Nginx static site
+  hosts: "{{ target | default('rebuild') }}"
+  become: true
+  roles:
+    - role: nginx
+      vars:
+        nginx_sites:
+          - name: mysite
+            server_name: "{{ static_domain }}"
+            root: /var/www/mysite

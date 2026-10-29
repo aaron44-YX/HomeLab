@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ item.server_name }}</title>
+</head>
+<body>
+  <h1>It works: {{ item.server_name }}</h1>
+  <p>Deployed by Ansible to {{ ansible_facts['hostname'] }}.</p>
+</body>
+</html>
