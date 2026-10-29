@@ -1,0 +1,4 @@
+---
+- import_playbook: 01-baseline.yml
+- import_playbook: 02-nginx.yml
+- import_playbook: 03-lemp.yml
