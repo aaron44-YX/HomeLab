@@ -13,3 +13,9 @@ __pycache__/
 # Safety net
 *.pem
 .env
+
+# Database and file backups
+*.sql
+*.sql.gz
+*.tar.gz
+
