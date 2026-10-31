@@ -47,3 +47,11 @@
 - [x] Admin login functional.
 - [x] MIS enrollment toggled **ON** and verified against student ID `10000001` (Pass).
 - [x] Background queue worker processing OCR and mail queues smoothly.
+
+## Part 14: Backup Procedure Verification
+Executed database dumps and storage backup on server (`homelab@192.168.1.200`):
+1. **PearlAS Database:** `sudo mariadb-dump --single-transaction pearlas | gzip > pearlas-db-$(date +%F).sql.gz`
+2. **Mock MIS Database:** `sudo mariadb-dump --single-transaction pearlas_mis | gzip > pearlas-mis-db-$(date +%F).sql.gz`
+3. **Uploaded Assets:** `sudo tar -czf pearlas-files-$(date +%F).tar.gz -C /var/www/pearlas storage/app/private`
+
+*Note: Backup archives and `.env` files are stored locally outside of version control for security compliance.*

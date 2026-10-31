@@ -1,0 +1,13 @@
+---
+- name: Playbook 3 - LEMP stack with WordPress
+  hosts: "{{ target | default('rebuild') }}"
+  become: true
+  roles:
+    - role: nginx
+      vars:
+        nginx_sites:
+          - name: wordpress
+            server_name: "{{ wp_domain }}"
+            root: "{{ wp_path }}"
+            php: true
+    - lemp
