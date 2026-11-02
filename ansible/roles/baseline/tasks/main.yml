@@ -42,6 +42,14 @@
     validate: /usr/sbin/visudo -cf %s
   when: admin_passwordless_sudo | bool
 
+- name: Ensure SSH privilege separation directory exists
+  ansible.builtin.file:
+    path: /run/sshd
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Harden SSH
   ansible.builtin.copy:
     dest: /etc/ssh/sshd_config.d/00-hardening.conf
