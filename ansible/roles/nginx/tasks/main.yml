@@ -75,3 +75,6 @@
     name: nginx
     state: started
     enabled: true
+
+- name: Apply pending Nginx reloads now
+  ansible.builtin.meta: flush_handlers
