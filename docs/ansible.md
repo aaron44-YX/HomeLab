@@ -7,7 +7,6 @@
 
 This runbook records how I turned Phases 1-4 into Ansible code, what I verified, what I broke on purpose, and what I got wrong by accident. Screenshots are in `docs/img/ansible/`. Secrets are never committed; the one place a password appeared on screen is blacked out.
 
-> **Before committing:** a few results I could not see in the screenshots are still marked `‹fill in›` (date, starting point and wall-clock time of the rebuild test, and the WordPress title and login check). Replace each one with your own result. Section 8, rows 4 and 5, describe fixes that are only true once they are pushed to `main` (secrets cleanup and `flush_handlers`). Delete this note when all of that is done.
 
 ---
 
