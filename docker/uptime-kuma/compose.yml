@@ -1,0 +1,15 @@
+# Uptime Kuma: self-hosted uptime monitoring
+# Reachable only through the host's Nginx reverse proxy (see configs/nginx/kuma)
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:2     # v2 line. Do NOT use :latest, it points at the old v1 line
+    container_name: uptime-kuma
+    restart: unless-stopped            # come back after crashes and reboots, but not after a manual stop
+    ports:
+      - "127.0.0.1:3001:3001"          # loopback only, so ufw cannot be bypassed
+    volumes:
+      - kuma-data:/app/data            # named volume: monitors, settings and history live here
+    mem_limit: 512m                    # keep the lab server's RAM safe
+
+volumes:
+  kuma-data:
