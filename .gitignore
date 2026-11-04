@@ -19,3 +19,7 @@ __pycache__/
 *.sql.gz
 *.tar.gz
 
+
+# never commit backups (they contain credentials)
+backups/
+*.tar.gz
