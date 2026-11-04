@@ -1,0 +1,36 @@
+# Throwaway lab for learning how Compose handles volumes and networks.
+# Not part of the real stack. Create it, experiment, then remove it with `docker compose down -v`.
+#
+# Experiments (run from this folder):
+#   docker compose up -d
+#   docker compose exec web sh -c 'echo "hello from the volume" > /usr/share/nginx/html/hello.txt'
+#   docker compose exec client wget -qO- http://web/hello.txt    # reaches "web" by service name
+#
+#   docker compose down        # removes containers + network, KEEPS the volume
+#   docker compose up -d
+#   docker compose exec client wget -qO- http://web/hello.txt    # file is still there
+#
+#   docker compose down -v     # also DELETES the volume (data is gone)
+#   docker volume ls           # scratch_testdata no longer listed
+#
+#   docker network ls
+#   docker network inspect scratch_default
+#   docker compose exec client ping -c 2 web
+
+services:
+  web:
+    image: nginx:alpine
+    volumes:
+      - testdata:/usr/share/nginx/html   # named volume: survives `down`, removed by `down -v`
+    # No "ports:" on purpose. Nothing is published to the host, and the client
+    # reaches this service over the private compose network instead.
+
+  client:
+    image: alpine
+    command: sleep 3600                  # keeps the container alive so we can exec into it
+
+# Compose creates a private network automatically (scratch_default).
+# Each service is resolvable by its service name ("web", "client").
+
+volumes:
+  testdata:
