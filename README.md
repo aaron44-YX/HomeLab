@@ -41,7 +41,7 @@ Full details and verification commands are in [docs/baseline.md](docs/baseline.m
 - [X] Phase 3: LEMP stack
 - [x] Phase 4: Bash scripting and backups
 - [x] Phase 5: Git and Ansible
-- [ ] Phase 6: Docker and Docker Compose
+- [x] Phase 6: Docker and Docker Compose
 - [ ] Phase 7: Monitoring
 - [ ] Phase 8: Pi-hole
 - [ ] Phase 9: Remote access and security
